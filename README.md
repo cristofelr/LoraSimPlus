@@ -64,8 +64,11 @@ Definem os objetos fundamentais da rede LoRaWAN, modelos de propagação e detec
 - `*-result.txt`: Resultados gerais da simulação LoRa.
 - `*-cluster-nodes.csv`: Lista de nós, suas posições, clusters e energia residual.
 - `*-cluster-rounds.csv`: Métricas de energia por rodada (idealizado).
-- `*-cluster-performance.csv`: **(Novo)** Métricas reais da simulação (PDR, pacotes enviados/perdidos, Bits/Joule por cluster).
+- `*-cluster-performance.csv`: **(Novo)** Métricas reais da simulação (PDR, pacotes enviados/perdidos, eficiência Bits/Joule, tempos de TX/Sleep e Duty Cycle por cluster).
 - `*-clusters.png`: Visualização do layout de clusters (fundo branco).
+
+## Configurações Adicionais
+- `duty_cycle`: Configurável no `ParameterConfig.py` (padrão 1% ou 0.01). Garante que os nós respeitem o tempo de silêncio obrigatório entre transmissões.
 
 ## Créditos
 As melhorias e extensões aplicadas nesta versão do simulador (LoRaSimPlus), incluindo a implementação dos módulos de clusterização, métricas de energia e otimizações de CLI, foram realizadas por:

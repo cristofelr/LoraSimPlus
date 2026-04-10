@@ -503,6 +503,9 @@ class Clustering:
                 'lost': 0,
                 'collided': 0,
                 'energy_J': 0.0,
+                'time_tx_ms': 0.0,
+                'time_rx_ms': 0.0,
+                'time_sleep_ms': 0.0,
                 'nodes': []
             }
 
@@ -516,18 +519,31 @@ class Clustering:
                 cluster_data[cid]['lost'] += node.node_lost
                 cluster_data[cid]['collided'] += node.node_collided
                 cluster_data[cid]['energy_J'] += node.node_total_energy
+                cluster_data[cid]['time_tx_ms'] += node.time_tx
+                cluster_data[cid]['time_rx_ms'] += node.time_rx
+                cluster_data[cid]['time_sleep_ms'] += node.time_sleep
                 cluster_data[cid]['nodes'].append(node)
 
         with open(perf_path, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(['cluster_id', 'sent', 'received', 'lost', 'collided', 
-                             'PDR', 'energy_J', 'bits_per_joule'])
+                             'PDR', 'energy_J', 'bits_per_joule', 
+                             'avg_tx_ms', 'avg_sleep_ms', 'duty_cycle_avg'])
             for cid, data in cluster_data.items():
+                node_count = len(data['nodes'])
                 pdr = (data['received'] / data['sent']) if data['sent'] > 0 else 0.0
                 bits = data['received'] * payload_size * 8
                 bpj = (bits / data['energy_J']) if data['energy_J'] > 0 else 0.0
+                
+                avg_tx = data['time_tx_ms'] / node_count if node_count > 0 else 0.0
+                avg_sleep = data['time_sleep_ms'] / node_count if node_count > 0 else 0.0
+                # Duty Cycle = TX / (TX + RX + Sleep)
+                total_time = data['time_tx_ms'] + data['time_rx_ms'] + data['time_sleep_ms']
+                dc = (data['time_tx_ms'] / total_time) if total_time > 0 else 0.0
+
                 writer.writerow([cid, data['sent'], data['received'], data['lost'], data['collided'],
-                                 round(pdr, 4), round(data['energy_J'], 6), round(bpj, 4)])
+                                 round(pdr, 4), round(data['energy_J'], 6), round(bpj, 4),
+                                 round(avg_tx, 2), round(avg_sleep, 2), round(dc, 6)])
         
         print(f'[Clustering] Performance metrics → {perf_path}')
         return perf_path

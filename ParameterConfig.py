@@ -61,6 +61,7 @@ leach_ch_prob        = 0.05         # CH election probability (LEACH only)
 leach_rounds         = 20           # number of rounds to simulate (LEACH)
 node_initial_energy  = 1.0          # initial energy per node in Joules
 ch_selection         = "default"    # "default" or "centroid"
+duty_cycle           = 0.01         # 1% standard duty cycle
 
 # global stuff
 nodes = [] # list of nodes

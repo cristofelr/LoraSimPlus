@@ -263,7 +263,26 @@ class Simulation:
     @staticmethod       
     def transmit(self, env, node):
         while True:
-            yield env.timeout(random.expovariate(1.0/float(node.period)))
+            # 1. SLEEP: Wait for the next transmission interval
+            wait_time = random.expovariate(1.0/float(node.period))
+            
+            # DUTY CYCLE ENFORCEMENT:
+            # Min silence period = ToA * (1/DutyCycle - 1)
+            # We use the ToA of the packet for the main BS for calculation
+            last_toa = node.packet[0].rectime if len(node.packet) > 0 else 0.0
+            min_off_time = last_toa * (1.0 / ParameterConfig.duty_cycle - 1)
+            
+            # If the random interval is too short, we must wait at least min_off_time
+            if wait_time < min_off_time:
+                wait_time = min_off_time
+
+            yield env.timeout(wait_time)
+            
+            # Record sleep time
+            node.time_sleep += (env.now - node.last_action_time)
+            node.last_action_time = env.now
+
+            # 2. TRANSMIT: send packets to all gateways
             node.sent = node.sent + ParameterConfig.nrBS
             ParameterConfig.packetSeq += ParameterConfig.nrBS
 
@@ -312,6 +331,17 @@ class Simulation:
                 self.TotalPacketAirtime += float(node.packet[bs_idx].rectime / 1000)            
                 
             yield env.timeout(node.packet[0].rectime)
+            
+            # Record TX time and RX windows (simplified Class A)
+            # In LoRaWAN, after sending, node stays in RX for a brief moment.
+            # For simplicity, we assign the packet airtime to TX.
+            node.time_tx += (env.now - node.last_action_time)
+            node.last_action_time = env.now
+            
+            # If the node is a CH (Cluster Head), it might spend more time listening (RX).
+            # We'll calculate the RX time at the end or track it here.
+            # In this model, let's assume CHs are always Lora-on (RX) when not TX-ing or Sleeping.
+            # But here they follow the same TX/Sleep loop, so RX is 0 for standard nodes.
 
             for bs_idx in range(0, ParameterConfig.nrBS):
                 if node.packet[bs_idx].lost:

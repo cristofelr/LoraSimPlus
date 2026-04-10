@@ -1,0 +1,2 @@
+round,n_clusters,n_ch,alive_nodes,dead_nodes,avg_residual_energy_J,total_residual_energy_J
+1,5,5,100,0,0.988635,98.863471

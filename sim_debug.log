@@ -1,0 +1,355 @@
+/home/cristofe/.local/lib/python3.10/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+Graphics enabled:  0
+Nodes per base station: 100
+AvgSendTime (exp. distributed): 300000
+LoRa parameters allocation type:  Local
+LoRa parameters allocation method:  closest
+Simtime:  3600000
+nrBS:  1
+Full Collision:  True
+with directionality:  1
+nrNetworks:  1
+radius:  2000.0
+PayloadSize:  20
+Clustering enabled:  True
+Clustering algorithm:  kmeans
+Number of clusters:  5
++++++++++uR node 0  and bs  0
+node x,y -1575 -1169
+main-bs x,y 0 0
++++++++++uR node 1  and bs  0
+node x,y -1147 1525
+main-bs x,y 0 0
++++++++++uR node 2  and bs  0
+node x,y 840 78
+main-bs x,y 0 0
++++++++++uR node 3  and bs  0
+node x,y 139 -622
+main-bs x,y 0 0
++++++++++uR node 4  and bs  0
+node x,y 829 1598
+main-bs x,y 0 0
++++++++++uR node 5  and bs  0
+node x,y 188 -1032
+main-bs x,y 0 0
++++++++++uR node 6  and bs  0
+node x,y -262 -1499
+main-bs x,y 0 0
++++++++++uR node 7  and bs  0
+node x,y 26 -1889
+main-bs x,y 0 0
++++++++++uR node 8  and bs  0
+node x,y -1505 -515
+main-bs x,y 0 0
++++++++++uR node 9  and bs  0
+node x,y 1796 -495
+main-bs x,y 0 0
++++++++++uR node 10  and bs  0
+node x,y -1322 1421
+main-bs x,y 0 0
++++++++++uR node 11  and bs  0
+node x,y -293 -427
+main-bs x,y 0 0
++++++++++uR node 12  and bs  0
+node x,y -1415 112
+main-bs x,y 0 0
++++++++++uR node 13  and bs  0
+node x,y 1538 845
+main-bs x,y 0 0
++++++++++uR node 14  and bs  0
+node x,y 545 930
+main-bs x,y 0 0
++++++++++uR node 15  and bs  0
+node x,y -1127 -657
+main-bs x,y 0 0
++++++++++uR node 16  and bs  0
+node x,y -1595 863
+main-bs x,y 0 0
++++++++++uR node 17  and bs  0
+node x,y 248 -34
+main-bs x,y 0 0
++++++++++uR node 18  and bs  0
+node x,y -109 184
+main-bs x,y 0 0
++++++++++uR node 19  and bs  0
+node x,y -306 404
+main-bs x,y 0 0
++++++++++uR node 20  and bs  0
+node x,y 1419 -266
+main-bs x,y 0 0
++++++++++uR node 21  and bs  0
+node x,y 1253 18
+main-bs x,y 0 0
++++++++++uR node 22  and bs  0
+node x,y -1537 436
+main-bs x,y 0 0
++++++++++uR node 23  and bs  0
+node x,y 484 -575
+main-bs x,y 0 0
++++++++++uR node 24  and bs  0
+node x,y -1390 -1218
+main-bs x,y 0 0
++++++++++uR node 25  and bs  0
+node x,y 955 -577
+main-bs x,y 0 0
++++++++++uR node 26  and bs  0
+node x,y -805 1798
+main-bs x,y 0 0
++++++++++uR node 27  and bs  0
+node x,y 1605 -1099
+main-bs x,y 0 0
++++++++++uR node 28  and bs  0
+node x,y 1158 802
+main-bs x,y 0 0
++++++++++uR node 29  and bs  0
+node x,y -958 -1429
+main-bs x,y 0 0
++++++++++uR node 30  and bs  0
+node x,y -534 1006
+main-bs x,y 0 0
++++++++++uR node 31  and bs  0
+node x,y -4 1225
+main-bs x,y 0 0
++++++++++uR node 32  and bs  0
+node x,y 673 -1610
+main-bs x,y 0 0
++++++++++uR node 33  and bs  0
+node x,y 900 -625
+main-bs x,y 0 0
++++++++++uR node 34  and bs  0
+node x,y 803 1623
+main-bs x,y 0 0
++++++++++uR node 35  and bs  0
+node x,y 1377 406
+main-bs x,y 0 0
++++++++++uR node 36  and bs  0
+node x,y -987 -113
+main-bs x,y 0 0
++++++++++uR node 37  and bs  0
+node x,y -1406 947
+main-bs x,y 0 0
++++++++++uR node 38  and bs  0
+node x,y 214 1231
+main-bs x,y 0 0
++++++++++uR node 39  and bs  0
+node x,y 973 -1322
+main-bs x,y 0 0
++++++++++uR node 40  and bs  0
+node x,y -361 1320
+main-bs x,y 0 0
++++++++++uR node 41  and bs  0
+node x,y 134 -1022
+main-bs x,y 0 0
++++++++++uR node 42  and bs  0
+node x,y 151 -1241
+main-bs x,y 0 0
++++++++++uR node 43  and bs  0
+node x,y -885 -643
+main-bs x,y 0 0
++++++++++uR node 44  and bs  0
+node x,y 578 -1190
+main-bs x,y 0 0
++++++++++uR node 45  and bs  0
+node x,y -1038 883
+main-bs x,y 0 0
++++++++++uR node 46  and bs  0
+node x,y -1139 330
+main-bs x,y 0 0
++++++++++uR node 47  and bs  0
+node x,y -526 432
+main-bs x,y 0 0
++++++++++uR node 48  and bs  0
+node x,y -413 -1210
+main-bs x,y 0 0
++++++++++uR node 49  and bs  0
+node x,y 914 1381
+main-bs x,y 0 0
++++++++++uR node 50  and bs  0
+node x,y -380 373
+main-bs x,y 0 0
++++++++++uR node 51  and bs  0
+node x,y -138 -427
+main-bs x,y 0 0
++++++++++uR node 52  and bs  0
+node x,y 1371 171
+main-bs x,y 0 0
++++++++++uR node 53  and bs  0
+node x,y 1156 -850
+main-bs x,y 0 0
++++++++++uR node 54  and bs  0
+node x,y -1009 1270
+main-bs x,y 0 0
++++++++++uR node 55  and bs  0
+node x,y 1268 646
+main-bs x,y 0 0
++++++++++uR node 56  and bs  0
+node x,y 1899 568
+main-bs x,y 0 0
++++++++++uR node 57  and bs  0
+node x,y 34 -690
+main-bs x,y 0 0
++++++++++uR node 58  and bs  0
+node x,y 144 -1223
+main-bs x,y 0 0
++++++++++uR node 59  and bs  0
+node x,y -1939 -252
+main-bs x,y 0 0
++++++++++uR node 60  and bs  0
+node x,y -774 -1007
+main-bs x,y 0 0
++++++++++uR node 61  and bs  0
+node x,y 1157 -970
+main-bs x,y 0 0
++++++++++uR node 62  and bs  0
+node x,y -915 418
+main-bs x,y 0 0
++++++++++uR node 63  and bs  0
+node x,y 1635 -1151
+main-bs x,y 0 0
++++++++++uR node 64  and bs  0
+node x,y 202 498
+main-bs x,y 0 0
++++++++++uR node 65  and bs  0
+node x,y -17 -371
+main-bs x,y 0 0
++++++++++uR node 66  and bs  0
+node x,y 661 1466
+main-bs x,y 0 0
++++++++++uR node 67  and bs  0
+node x,y -636 -259
+main-bs x,y 0 0
++++++++++uR node 68  and bs  0
+node x,y 971 -1621
+main-bs x,y 0 0
++++++++++uR node 69  and bs  0
+node x,y 559 -644
+main-bs x,y 0 0
++++++++++uR node 70  and bs  0
+node x,y 1133 543
+main-bs x,y 0 0
++++++++++uR node 71  and bs  0
+node x,y -16 -562
+main-bs x,y 0 0
++++++++++uR node 72  and bs  0
+node x,y 836 -915
+main-bs x,y 0 0
++++++++++uR node 73  and bs  0
+node x,y 595 -1248
+main-bs x,y 0 0
++++++++++uR node 74  and bs  0
+node x,y 6 1033
+main-bs x,y 0 0
++++++++++uR node 75  and bs  0
+node x,y 1872 -499
+main-bs x,y 0 0
++++++++++uR node 76  and bs  0
+node x,y 1169 -226
+main-bs x,y 0 0
++++++++++uR node 77  and bs  0
+node x,y -1830 -549
+main-bs x,y 0 0
++++++++++uR node 78  and bs  0
+node x,y 932 1664
+main-bs x,y 0 0
++++++++++uR node 79  and bs  0
+node x,y 1919 372
+main-bs x,y 0 0
++++++++++uR node 80  and bs  0
+node x,y 1244 810
+main-bs x,y 0 0
++++++++++uR node 81  and bs  0
+node x,y -837 -648
+main-bs x,y 0 0
++++++++++uR node 82  and bs  0
+node x,y 451 577
+main-bs x,y 0 0
++++++++++uR node 83  and bs  0
+node x,y -759 -203
+main-bs x,y 0 0
++++++++++uR node 84  and bs  0
+node x,y 379 -781
+main-bs x,y 0 0
++++++++++uR node 85  and bs  0
+node x,y 16 443
+main-bs x,y 0 0
++++++++++uR node 86  and bs  0
+node x,y 1232 1152
+main-bs x,y 0 0
++++++++++uR node 87  and bs  0
+node x,y -902 505
+main-bs x,y 0 0
++++++++++uR node 88  and bs  0
+node x,y -147 256
+main-bs x,y 0 0
++++++++++uR node 89  and bs  0
+node x,y -633 503
+main-bs x,y 0 0
++++++++++uR node 90  and bs  0
+node x,y 204 107
+main-bs x,y 0 0
++++++++++uR node 91  and bs  0
+node x,y -1633 -64
+main-bs x,y 0 0
++++++++++uR node 92  and bs  0
+node x,y 304 602
+main-bs x,y 0 0
++++++++++uR node 93  and bs  0
+node x,y 1025 -547
+main-bs x,y 0 0
++++++++++uR node 94  and bs  0
+node x,y -1120 836
+main-bs x,y 0 0
++++++++++uR node 95  and bs  0
+node x,y 777 -430
+main-bs x,y 0 0
++++++++++uR node 96  and bs  0
+node x,y 225 -1254
+main-bs x,y 0 0
++++++++++uR node 97  and bs  0
+node x,y 530 479
+main-bs x,y 0 0
++++++++++uR node 98  and bs  0
+node x,y 1541 161
+main-bs x,y 0 0
++++++++++uR node 99  and bs  0
+node x,y 739 -1277
+main-bs x,y 0 0
+
+=======================================================
+  Clustering Summary — Algorithm: KMEANS
+=======================================================
+  Total rounds simulated : 1
+  Final clusters         : 5
+  Final CHs              : 5
+  First node death       : none (all alive)
+  Network lifetime       : > 1 rounds  (network alive)
+  Alive nodes (final)    : 100
+  Avg residual energy    : 9.8990e-01 J
+=======================================================
+  Cluster  0: CH=node70    Members=[2, 4, 9, 13, 14, 20, 21, 28, 34, 35, 49, 52, 55, 56, 66, 75, 76, 78, 79, 80, 82, 86, 97, 98]  Alive=25
+  Cluster  1: CH=node18    Members=[11, 17, 19, 47, 50, 51, 64, 65, 67, 71, 85, 88, 90, 92]  Alive=15
+  Cluster  2: CH=node44    Members=[3, 5, 6, 7, 23, 25, 27, 32, 33, 39, 41, 42, 53, 57, 58, 61, 63, 68, 69, 72, 73, 84, 93, 95, 96, 99]  Alive=27
+  Cluster  3: CH=node15    Members=[0, 8, 12, 24, 29, 36, 43, 48, 59, 60, 77, 81, 83, 91]  Alive=15
+  Cluster  4: CH=node45    Members=[1, 10, 16, 22, 26, 30, 31, 37, 38, 40, 46, 54, 62, 74, 87, 89, 94]  Alive=18
+
+[Clustering] Round metrics → /home/cristofe/LoRaSimPlus/results/2026-04-10_14-19-08/2026-04-10_14-19-08-cluster-rounds.csv
+[Clustering] Node metrics   → /home/cristofe/LoRaSimPlus/results/2026-04-10_14-19-08/2026-04-10_14-19-08-cluster-nodes.csv
+[Clustering] Cluster plot saved to /home/cristofe/LoRaSimPlus/results/2026-04-10_14-19-08/2026-04-10_14-19-08-clusters.png
+Traceback (most recent call last):
+  File "/home/cristofe/LoRaSimPlus/simulation.py", line 272, in transmit
+    last_toa = node.packet[0].rectime
+IndexError: list index out of range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/cristofe/LoRaSimPlus/main.py", line 72, in <module>
+    simulation.run()
+  File "/home/cristofe/LoRaSimPlus/simulation.py", line 127, in run
+    ParameterConfig.env.run(until=ParameterConfig.simtime)
+  File "/home/cristofe/.local/lib/python3.10/site-packages/simpy/core.py", line 246, in run
+    self.step()
+  File "/home/cristofe/.local/lib/python3.10/site-packages/simpy/core.py", line 204, in step
+    raise exc
+IndexError: list index out of range

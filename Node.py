@@ -36,6 +36,12 @@ class myNode:
         self.node_collided = 0
         self.node_total_energy = 0 # Accumulated Joule
 
+        # Time tracking (in milliseconds)
+        self.time_tx = 0.0
+        self.time_rx = 0.0
+        self.time_sleep = 0.0
+        self.last_action_time = 0.0 # simulator time (ms) of last state change
+
         if ParameterConfig.allocation_type == "Global":
             myNode.Generate_Packet(self)
 
