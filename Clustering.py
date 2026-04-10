@@ -640,7 +640,68 @@ class Clustering:
 
         # If all nodes still alive after all rounds
         if self.last_death_round is None and self.first_death_round is None:
-            pass  # no deaths occurred
+            self.first_death_round = self.total_rounds
+            
+    # ------------------------------------------------------------------
+    def cross_validate(self, nodes, n_folds=5):
+        """
+        Perform K-Fold Cross-Validation for clustering stability.
+        Returns a dictionary with average performance metrics.
+        """
+        if len(nodes) < n_folds * 2:
+            return {"error": "Not enough nodes for K-fold"}
+            
+        random.shuffle(nodes)
+        self._init_energy(nodes) # Ensure is_alive and energy fields exist
+        folds = np.array_split(nodes, n_folds)
+        results = []
+        
+        print(f"\n[Validation] Starting {n_folds}-Fold Cross-Validation...")
+        for i in range(n_folds):
+            # Split into training and test sets
+            test_set = folds[i]
+            train_set = [n for j, f in enumerate(folds) if j != i for n in f]
+            
+            # 1. 'Train' on train_set (find K and Cluster Centers)
+            # Use original algorithm settings
+            temp_nodes = [n for n in train_set] # clones not needed as we only read
+            suggested_k = self._estimate_k_kde(temp_nodes)
+            
+            # Use internal _kmeans instead of sklearn for environment compatibility
+            clusters_train = _kmeans(train_set, suggested_k)
+            centers = []
+            for c in clusters_train:
+                if c:
+                    centers.append([np.mean([n.x for n in c]), np.mean([n.y for n in c])])
+            centers = np.array(centers)
+            
+            # 2. 'Evaluate' on test_set
+            # Metrics: WCSS (Inertia) on test set
+            coords_test = np.array([[n.x, n.y] for n in test_set])
+            test_inertia = 0.0
+            for pt in coords_test:
+                dists_sq = np.sum((centers - pt)**2, axis=1)
+                test_inertia += np.min(dists_sq)
+            
+            avg_inertia = test_inertia / len(test_set)
+            results.append({
+                'fold': i+1,
+                'k': suggested_k,
+                'avg_inertia': avg_inertia
+            })
+            print(f"  Fold {i+1}: K={suggested_k}, Avg Inertia={avg_inertia:.2f}")
+
+        # Final average
+        avg_k = sum(r['k'] for r in results) / n_folds
+        final_inertia = sum(r['avg_inertia'] for r in results) / n_folds
+        print(f"[Validation] CV Result: Avg K={avg_k:.1f}, Avg Test Inertia={final_inertia:.2f}\n")
+        
+        return {
+            'n_folds': n_folds,
+            'avg_k': avg_k,
+            'avg_test_inertia': final_inertia,
+            'fold_details': results
+        }
 
     # ------------------------------------------------------------------
     def save_metrics(self, folder_path, file_name):

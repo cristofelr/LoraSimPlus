@@ -90,6 +90,10 @@ GL = 0
 # prepare graphics and add sink
 ax = None
 
+# Cross-Validation parameters
+cross_validate = False
+n_folds = 5
+
 def setup_graphics():
     global ax
     if (graphics == 1):

@@ -38,7 +38,11 @@ if __name__ == "__main__":
         if len(sys.argv) > 18:
             ParameterConfig.graphics = int(sys.argv[18])                   # 0 = off, 1 = on
         if len(sys.argv) > 19:
-            ParameterConfig.ch_selection = sys.argv[19]                    # "random" | "energy"
+            ParameterConfig.ch_selection = sys.argv[19]                    # "centroid" | "energy_proximity" | "default"
+        if len(sys.argv) > 20:
+            ParameterConfig.cross_validate = bool(int(sys.argv[20]))       # 0 | 1
+        if len(sys.argv) > 21:
+            ParameterConfig.n_folds = int(sys.argv[21])                    # number of folds
     else:
         print ("------Use the default config------")
 
@@ -60,6 +64,8 @@ if __name__ == "__main__":
         print ("Clustering algorithm: ", ParameterConfig.clustering_algorithm)
         if ParameterConfig.clustering_algorithm in ["kmeans", "kde_kmeans"]:
             print("Number of clusters: ", ParameterConfig.nrClusters)
+            if ParameterConfig.cross_validate:
+                print(f"K-Fold Cross-Validation: Enabled ({ParameterConfig.n_folds} folds)")
         elif ParameterConfig.clustering_algorithm == "leach":
             print("LEACH CH probability: ", ParameterConfig.leach_ch_prob)
             print("LEACH rounds: ", ParameterConfig.leach_rounds)

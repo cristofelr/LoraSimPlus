@@ -78,6 +78,10 @@ class Simulation:
                 node_initial_energy=ParameterConfig.node_initial_energy,
                 ch_selection_method=ParameterConfig.ch_selection,
             )
+            
+            if ParameterConfig.cross_validate:
+                clust.cross_validate(unique_nodes, n_folds=ParameterConfig.n_folds)
+                
             clust.run(unique_nodes, gateways=ParameterConfig.bs)
             self.clustering = clust
 
