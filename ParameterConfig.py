@@ -36,17 +36,31 @@ Carrier_Frequency = np.array([867100000,867300000,867500000,867700000,
                        867900000,868100000,868300000,868500000])
 
 # adaptable LoRaWAN parameters to users
-nrNodes = 100
+nrNodes = 200
 nrBS = 1
 radius = 2000
-PayloadSize = 65
-avgSendTime = 5000
+PayloadSize =20 
+avgSendTime = 300000
 allocation_type = "Local"
 allocation_method = "random"
 nrNetworks = 1
 simtime = 3600000 * 24
 directionality = 1
 full_collision = 1
+
+# ---------------------------------------------------------------
+# Clustering parameters
+# ---------------------------------------------------------------
+# Set clustering_enabled = True to group nodes into clusters before
+# the simulation starts.  Cluster Members (CM) send to their Cluster
+# Head (CH), and the CH forwards to the Gateway (GW).
+clustering_enabled   = False        # True  → enable clustering
+nrClusters           = 5            # number of clusters (K-means)
+clustering_algorithm = "kmeans"     # "kmeans" | "leach"
+leach_ch_prob        = 0.05         # CH election probability (LEACH only)
+leach_rounds         = 20           # number of rounds to simulate (LEACH)
+node_initial_energy  = 1.0          # initial energy per node in Joules
+ch_selection         = "default"    # "default" or "centroid"
 
 # global stuff
 nodes = [] # list of nodes
@@ -73,10 +87,14 @@ Lpld0 = 128.95
 GL = 0
 
 # prepare graphics and add sink
-if (graphics == 1):
-    plt.ion()
-    plt.figure()
-    ax = plt.gcf().gca()
+ax = None
+
+def setup_graphics():
+    global ax
+    if (graphics == 1):
+        plt.ion()
+        plt.figure()
+        ax = plt.gcf().gca()
 
 # list of base stations
 bs = []

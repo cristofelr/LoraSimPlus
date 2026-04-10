@@ -3,7 +3,9 @@
 # it also sets all parameters, currently random
 #
 import random
-from ParameterConfig import *
+import math
+import numpy as np
+import ParameterConfig
 from Propagation import rssi,snr
 
 class myPacket:
@@ -19,7 +21,7 @@ class myPacket:
         self.bw = PacketPara.bw
         self.tp = PacketPara.tp
         self.fre = PacketPara.fre
-        self.PS = PacketPara.PayloadSize
+        self.PS = ParameterConfig.PayloadSize
 
         self.lost = True
         # denote if packet is collided
@@ -69,11 +71,11 @@ class myPacket:
             bandwidth = 2
         elif bw == 500:
             bandwidth = 3
-        return sensi[sf-7,bandwidth]
+        return ParameterConfig.sensi[sf-7,bandwidth]
 
     @staticmethod
     def GetMiniSNR(sf):
-        return SNR_Req[sf-7]    
+        return ParameterConfig.SNR_Req[sf-7]    
 
     @staticmethod
     def calculate_energy(tp, airtime):

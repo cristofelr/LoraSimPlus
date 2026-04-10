@@ -1,7 +1,8 @@
 # check for collisions at base station
 # Note: called before a packet (or rather node) is inserted into the list
 import math
-from ParameterConfig import *
+import numpy as np
+import ParameterConfig
 
 # check for collisions at base station
 # Note: called before a packet (or rather node) is inserted into the list
@@ -10,13 +11,13 @@ def checkcollision(packet):
     # lost packets don't collide
     if packet.lost: 
        return 0
-    if packetsAtBS[packet.bs]:
-        for other in packetsAtBS[packet.bs]:
+    if ParameterConfig.packetsAtBS[packet.bs]:
+        for other in ParameterConfig.packetsAtBS[packet.bs]:
             if other.id != packet.nodeid: # nodes that donnot send this packet
                # simple collision
                if frequencyCollision(packet, other.packet[packet.bs]) \
                    and sfCollision(packet, other.packet[packet.bs]):
-                   if full_collision:
+                   if ParameterConfig.full_collision:
                        if timingCollision(packet, other.packet[packet.bs]):
                            # check who collides in the power domain
                            c = powerCollision(packet, other.packet[packet.bs])
@@ -85,16 +86,16 @@ def timingCollision(p1, p2):
     
     # check whether p2 ends in p1's critical section
     p2_end = p2.addTime + p2.rectime
-    p1_cs = env.now + Tpreamb
+    p1_cs = ParameterConfig.env.now + Tpreamb
     if p1_cs < p2_end:
         # p1 collided with p2 and lost
         return True
     return False
 
 def rssi(distance):
-    Lpl = 10*gamma*math.log10(distance/d0) + np.random.normal(Lpld0,std)
+    Lpl = 10*ParameterConfig.gamma*math.log10(distance/ParameterConfig.d0) + np.random.normal(ParameterConfig.Lpld0,ParameterConfig.std)
     # print (Lpl)
-    Prx = Ptx + GL - Lpl
+    Prx = ParameterConfig.Ptx + ParameterConfig.GL - Lpl
     return Prx
 
 def snr(rss):

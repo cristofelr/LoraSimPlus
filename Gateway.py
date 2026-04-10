@@ -1,8 +1,6 @@
-#
-# this function creates a BS, base station
-#
+import math
 import matplotlib.pyplot as plt
-from ParameterConfig import *
+import ParameterConfig
 
 class myBS:
     def __init__(self, id):
@@ -12,19 +10,19 @@ class myBS:
         self.y = 0
 
         # create gateways and initialize their positions
-        if nrBS == 1 and self.id == 0:
+        if ParameterConfig.nrBS == 1 and self.id == 0:
             self.x = 0
             self.y = 0
-        elif nrBS == 2:
-            a = radius/2.0 # radius/2
+        elif ParameterConfig.nrBS == 2:
+            a = ParameterConfig.radius/2.0 # radius/2
             if self.id == 0:
                 self.x = a
                 self.y = 0
             elif self.id == 1:
                 self.x = -a
                 self.y = 0
-        elif nrBS == 3:
-            a = radius/(2.0 + math.sqrt(3)) # radius/11
+        elif ParameterConfig.nrBS == 3:
+            a = ParameterConfig.radius/(2.0 + math.sqrt(3)) # radius/11
             b = math.sqrt(3) * a # (9*radius)/11
             c = 2 * a # (2*radius)/11
             if self.id == 0:
@@ -36,8 +34,8 @@ class myBS:
             if self.id == 2:
                 self.x = 0
                 self.y = c
-        elif nrBS == 4:
-            a = radius/(1.0 + math.sqrt(2)) # radius/5
+        elif ParameterConfig.nrBS == 4:
+            a = ParameterConfig.radius/(1.0 + math.sqrt(2)) # radius/5
             if self.id == 0:
                 self.x = a
                 self.y = a
@@ -51,20 +49,14 @@ class myBS:
                 self.x = -a
                 self.y = -a
                 
-        global graphics
-        if (graphics):
-            global ax
+        if (ParameterConfig.graphics):
             # XXX should be base station position
             # deaw different BSs according to their ids
             if (self.id == 0):
-                ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='red'))
-                # ax.add_artist(plt.Circle((self.x, self.y), maxDist, fill=False, color='blue'))
+                ParameterConfig.ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='red'))
             if (self.id == 1):
-                ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='red'))
-                # ax.add_artist(plt.Circle((self.x, self.y), maxDist, fill=False, color='red'))
+                ParameterConfig.ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='red'))
             if (self.id == 2):
-                ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='green'))
-                # ax.add_artist(plt.Circle((self.x, self.y), maxDist, fill=False, color='green'))
+                ParameterConfig.ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='green'))
             if (self.id == 3):
-                ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='brown'))
-                # ax.add_artist(plt.Circle((self.x, self.y), maxDist, fill=False, color='brown'))
+                ParameterConfig.ax.add_artist(plt.Circle((self.x, self.y), 10, fill=True, color='brown'))
