@@ -120,8 +120,10 @@ Os arquivos são salvos em `results/<timestamp>/`:
 | `*-clusters.png` | Gráfico visual dos clusters |
 | `*-cluster-rounds.csv` | Métricas por round: nós vivos, energia residual, nº CHs |
 | `*-cluster-nodes.csv` | Estado final de cada nó: energia, cluster, role, alive |
-| `link_metrics.txt` | Log de cada transmissão com coluna `ROLE` (CH/CM/NODE) |
-| `*-result.txt` | Resumo: parâmetros + DER + energia + lifetime da rede |
+| `*-cluster-performance.csv` | **Performance real**: PDR, Bits/J, ACKs, TX/RX/Sleep time e Duty Cycle |
+| `links.csv` | Log detalhado de **cada link** (SNR, RSSI, ToA, SF, etc) |
+| `link_metrics.txt` | Backup simplificado das métricas de link |
+| `*-result.txt` | Resumo estatístico da simulação |
 
 ### Ver métricas por round:
 ```bash

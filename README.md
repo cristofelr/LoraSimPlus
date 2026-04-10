@@ -1,78 +1,59 @@
-# LoRaSim para Alocação de Parâmetros
-[LoRaSim](https://www.lancaster.ac.uk/scc/sites/lora/lorasim.html) é um simulador LoRa desenvolvido com base no simpy, uma biblioteca Python para simulação de eventos discretos. O LoRaSim fornece um processo completo de transmissão de pacotes de rede e propõe um mecanismo de detecção de colisão. No entanto, o LoRaSim não fornece métodos de alocação de parâmetros LoRa durante a transmissão de pacotes, que é atualmente o foco de pesquisa de muitos pesquisadores de LoRa. O LoRaSimPlus fornece aos pesquisadores serviços programáveis mais ricos baseados no LoRaSim, o que pode ajudar os pesquisadores a realizar pesquisas mais profundas sobre consumo de energia e transmissão de pacotes da rede LoRaWAN.
+# LoRaSimPlus
 
-Esta versão estendida, **LoRaSimPlus**, inclui suporte avançado para clusterização (K-means e LEACH) e modelagem de energia, desenvolvida para simular cenários de IoT com maior fidelidade.
+O **LoRaSimPlus** é uma extensão avançada do simulador LoRaSim, focada em redes LoRaWAN clusterizadas. Esta versão inclui suporte a algoritmos de agrupamento (K-means, LEACH), métricas detalhadas de energia, eficiência por bit e conformidade com protocolos de tempo (Duty Cycle e janelas de confirmação).
 
-## Requisitos
-* Python == 3.x
-* simpy
-* matplotlib
-* numpy
-  
-## Como Usar
-O arquivo `ParameterConfig.py` inclui todas as configurações de parâmetros padrão suportadas pelo simulador. Você pode modificar as configurações padrão no `ParameterConfig.py` e usar a seguinte linha de comando para executar o simulador:
+## 🚀 Como Executar
+
+O simulador é controlado via linha de comando com 19 argumentos posicionais:
 
 ```bash
-python3 main.py
+python3 main.py <Nodes> <Interval> <AllocType> <AllocMode> <SimTime> <nrBS> <Collision> <Antenna> <Networks> <Radius> <Payload> <Clustering> <nClusters> <Algo> <CH_Prob> <Rounds> <InitEnergy> <Graphics> <CH_Selection>
 ```
 
-Você também pode deixar as configurações padrão inalteradas e definir os parâmetros através da linha de comando:
-
+### Exemplo de Comando (Recomendado):
 ```bash
-python3 main.py <Nodes> <Interval> <AllocType> <AllocMode> <SimTime> <Gateways> <CollisionMode> <Antenna> <Networks> <Radius> <Payload> <Clustering(0/1)> <Algorithm> <CH_Prob> <Rounds> <InitialEnergy> <Graphics(0/1)> <CH_Selection>
+python3 main.py 100 300000 Local closest 3600000 1 1 1 1 2000 20 1 5 kmeans 0.1 1 1.0 0 centroid
 ```
 
-### Parâmetros de Clusterização:
-- **Clustering**: 0 (desativado) ou 1 (ativado).
-- **Algorithm**: `kmeans` ou `leach`.
-- **CH_Prob**: Probabilidade de se tornar Cluster Head (ex: 0.1).
-- **Rounds**: Número de rodadas (LEACH).
-- **InitialEnergy**: Energia inicial em Joules (ex: 1.0).
-- **Graphics**: 0 (ocultar visualização) ou 1 (exibir).
-- **CH_Selection**: `default` (padrão do algoritmo) ou `centroid` (força seleção pelo centroide).
+### Tabela de Argumentos:
+| Pos | Argumento | Descrição | Valores Sugeridos |
+|-----|-----------|-----------|-------------------|
+| 1 | `Nodes` | Número total de sensores | 10 a 2000 |
+| 2 | `Interval` | Intervalo médio entre mensagens (ms) | 300000 (5 min) |
+| 3 | `AllocType` | Escopo da alocação de rádio | `Local` ou `Global` |
+| 4 | `AllocMode` | Método de escolha de SF | `closest`, `random`, `polling` |
+| 5 | `SimTime` | Tempo total da simulação (ms) | 3600000 (1 hora) |
+| 10 | `Radius` | Raio da rede em metros | 2000 |
+| 12 | `Clustering`| Habilitar módulos de cluster (1=Sim, 0=Não) | 1 |
+| 13 | `nClusters` | Quantidade de grupos de sensores | 5 |
+| 14 | `Algorithm` | Algoritmo de formação | `kmeans` ou `leach` |
+| 19 | `CH_Selection`| Método de escolha do cabeçalho | `centroid` ou `default` |
 
-Para mais detalhes sobre os parâmetros de clusterização, consulte o [TUTORIAL.md](TUTORIAL.md).
+---
 
-## Clusterização (Clustering)
-O LoRaSimPlus suporta dois algoritmos principais de clusterização:
+## 📊 Arquivos de Saída (Resultados)
 
-1.  **K-means**: Agrupa os nós geograficamente em *K* clusters fixos. O nó mais central de cada grupo é eleito como Cluster Head (CH).
-2.  **LEACH (Low-Energy Adaptive Clustering Hierarchy)**: Protocolo probabilístico e adaptativo que rotaciona o papel de CH entre os nós para balancear o consumo de energia. Suporta múltiplos rounds de simulação e rastreamento de morte de nós.
+Os resultados são salvos em `results/<timestamp>/`:
 
-O fluxo de comunicação na rede clusterizada segue o padrão:
-`Nó (Membro) ──► Cluster Head (CH) ──► Gateway (GW)`
+1.  **`links.csv`**: Log detalhado de **cada pacote enviado**. Contém Sensor ID, RSSI, SNR, Spreading Factor (SF), ToA e status final (RECEIVED, COLLISION, LOST).
+2.  **`*-cluster-performance.csv`**: Métricas agregadas por cluster:
+    -   **PDR**: Taxa de entrega de pacotes.
+    -   **acks**: Mensagens que receberam confirmação da rede.
+    -   **Bits/Joule**: Eficiência energética (Bits recebidos por Joule gasto).
+    -   **Tempo de Estados**: Tempo médio em Transmissão (TX), Escuta (RX) e Sleep.
+    -   **Duty Cycle**: Porcentagem de ocupação real do canal por nó.
+3.  **`*-clusters.png`**: Mapa visual da rede com nós coloridos por cluster e Cluster Heads destacados.
 
-## Estrutura do Software
-O simulador é composto pelos seguintes arquivos principais:
+---
 
-### [ParameterConfig.py](ParameterConfig.py)
-Inclui todas as variáveis globais, parâmetros LoRaWAN e de clusterização.
+## 🛠️ Novas Funcionalidades Implementadas
 
-### [main.py](main.py)
-Programa principal que inicia a simulação e fornece a interface CLI.
-
-### [Clustering.py](Clustering.py)
-Implementa os algoritmos K-means e LEACH, o modelo de energia de primeira ordem e as ferramentas de visualização de clusters.
-
-### [simulation.py](simulation.py)
-Gerencia o ambiente SimPy e integra a lógica de rede com a clusterização.
-
-### [Node.py](Node.py), [Gateway.py](Gateway.py), [Packet.py](Packet.py), [Propagation.py](Propagation.py)
-Definem os objetos fundamentais da rede LoRaWAN, modelos de propagação e detecção de colisão.
-
-### Arquivos de Saída:
-- `*-result.txt`: Resultados gerais da simulação LoRa.
-- `*-cluster-nodes.csv`: Lista de nós, suas posições, clusters e energia residual.
-- `*-cluster-rounds.csv`: Métricas de energia por rodada (idealizado).
-- `*-cluster-performance.csv`: **(Novo)** Métricas reais da simulação (PDR, pacotes enviados/perdidos, eficiência Bits/Joule, tempos de TX/Sleep e Duty Cycle por cluster).
-- `links.csv`: **(Novo)** Log detalhado de **cada transmissão** (SNR, RSSI, ToA, SF, energia, status, role) com ID do sensor.
-- `*-clusters.png`: Visualização do layout de clusters (fundo branco).
-
-## Configurações Adicionais
-- `duty_cycle`: Configurável no `ParameterConfig.py` (padrão 1% ou 0.01). Garante que os nós respeitem o tempo de silêncio obrigatório entre transmissões.
+-   **Refatoração de Estado Global**: Otimização da sincronização de parâmetros via `ParameterConfig`.
+-   **Duty Cycle Enforcement**: O simulador agora obriga os nós a respeitarem o tempo de silêncio legal após cada transmissão.
+-   **Modelo LoRaWAN Class A**: Implementação das janelas de recepção RX1 e RX2 para simulação de confirmações (ACKs).
+-   **Seleção por Centroide**: Capacidade de escolher como Cluster Head o nó mais próximo do centro geométrico do cluster.
 
 ## Créditos
-As melhorias e extensões aplicadas nesta versão do simulador (LoRaSimPlus), incluindo a implementação dos módulos de clusterização, métricas de energia e otimizações de CLI, foram realizadas por:
-
+Extensões e melhorias desenvolvidas por:
 **Cristofe Rocha**
-*Aluno de Doutorado da Universidade Federal de Pernambuco (UFPE)*
+*Doutorando na Universidade Federal de Pernambuco (UFPE)*
