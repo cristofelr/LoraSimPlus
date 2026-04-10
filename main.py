@@ -28,7 +28,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 13:
             ParameterConfig.nrClusters = int(sys.argv[13])                 # number of clusters (K-means)
         if len(sys.argv) > 14:
-            ParameterConfig.clustering_algorithm = sys.argv[14]            # "kmeans" | "leach"
+            ParameterConfig.clustering_algorithm = sys.argv[14]            # "kmeans" | "leach" | "kde_kmeans"
         if len(sys.argv) > 15:
             ParameterConfig.leach_ch_prob = float(sys.argv[15])            # CH probability (LEACH)
         if len(sys.argv) > 16:
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     print ("Clustering enabled: ", ParameterConfig.clustering_enabled)
     if ParameterConfig.clustering_enabled:
         print ("Clustering algorithm: ", ParameterConfig.clustering_algorithm)
-        if ParameterConfig.clustering_algorithm == "kmeans":
+        if ParameterConfig.clustering_algorithm in ["kmeans", "kde_kmeans"]:
             print("Number of clusters: ", ParameterConfig.nrClusters)
         elif ParameterConfig.clustering_algorithm == "leach":
             print("LEACH CH probability: ", ParameterConfig.leach_ch_prob)

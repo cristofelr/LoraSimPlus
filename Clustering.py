@@ -30,6 +30,9 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
+# (scipy imports removed due to numpy binary incompatibility)
+
+import ParameterConfig
 
 # ---------------------------------------------------------------------------
 # Energy model constants  (First-Order Radio model — Heinzelman 2000)
@@ -293,6 +296,7 @@ class Clustering:
         """Initialise energy fields on each node."""
         for node in nodes:
             node.energy = self.node_initial_energy
+            node.initial_energy = self.node_initial_energy
             node.is_alive = True
             node.last_ch_round = -9999   # LEACH: rounds since last CH role
 
@@ -337,6 +341,10 @@ class Clustering:
         for cid, cluster in enumerate(clusters):
             if self.ch_selection_method == "centroid":
                 ch = _select_ch_kmeans(cluster) # already does centroid
+            elif self.ch_selection_method == "energy_proximity":
+                # We reuse the specific logic here or call our new method
+                # (simplified: we'll call a per-cluster version)
+                ch = self._select_ch_weighted_centroid(cluster)
             elif self.algorithm == "leach" and self.ch_selection_method == "default":
                 ch = _select_ch_leach(cluster)
             else:
@@ -355,6 +363,186 @@ class Clustering:
         return heads
 
     # ------------------------------------------------------------------
+    def _run_kde_kmeans(self, nodes, gateways):
+        """KDE-KMeans: Dynamic K estimation + RAMO CH selection."""
+        # 1. Estimate K using KDE (manual implementation)
+        suggested_k = self._estimate_k_kde(nodes)
+        print(f"[KDE] Estimated optimal K: {suggested_k}")
+        
+        # 2. Run Clustering with suggested K
+        self.clusters = _kmeans(nodes, suggested_k)
+        
+        # 3. Assign roles using RAMO (Relief-Aware Multi-Objective)
+        # Calculate manual density for all nodes
+        bandwidth = ParameterConfig.radius / 5.0 # heuristic bandwidth
+        coords = np.array([[n.x, n.y] for n in nodes])
+        for node in nodes:
+            dists_sq = (coords[:,0] - node.x)**2 + (coords[:,1] - node.y)**2
+            node.density = np.sum(np.exp(-0.5 * dists_sq / (bandwidth**2)))
+            
+        self.cluster_heads = self._assign_roles_ramo(self.clusters)
+        
+        # 4. Energy and metrics
+        self._consume_round_energy(self.clusters, self.cluster_heads, gateways)
+        self.total_rounds = 1
+        self._record_final_metrics(nodes)
+
+    def _estimate_k_kde(self, nodes):
+        """Suggest K based on number of manual density peaks."""
+        if len(nodes) < 10: return self.nr_clusters
+        
+        # Use a grid-based approach to find peaks
+        bandwidth = ParameterConfig.radius / 5.0
+        grid_size = 40
+        x = np.linspace(-ParameterConfig.radius, ParameterConfig.radius, grid_size)
+        y = np.linspace(-ParameterConfig.radius, ParameterConfig.radius, grid_size)
+        X, Y = np.meshgrid(x, y)
+        grid_coords = np.vstack([X.ravel(), Y.ravel()]).T
+        node_coords = np.array([[n.x, n.y] for n in nodes])
+        
+        Z = np.zeros(grid_coords.shape[0])
+        for i, g_coord in enumerate(grid_coords):
+            dists_sq = (node_coords[:,0] - g_coord[0])**2 + (node_coords[:,1] - g_coord[1])**2
+            Z[i] = np.sum(np.exp(-0.5 * dists_sq / (bandwidth**2)))
+        
+        Z = Z.reshape(X.shape)
+        
+        # Simple peak detection: count local maxima on the grid
+        k = 0
+        for i in range(1, grid_size-1):
+            for j in range(1, grid_size-1):
+                val = Z[i,j]
+                if (val > Z[i-1,j] and val > Z[i+1,j] and 
+                    val > Z[i,j-1] and val > Z[i,j+1] and
+                    val > np.mean(Z)):
+                    k += 1
+        
+        return max(2, min(k, 15)) # Constraint K between 2 and 15
+
+    def _assign_roles_ramo(self, clusters):
+        """RAMO CH Selection: Energy + Density + Weighted Centroid."""
+        heads = []
+        for cid, cluster in enumerate(clusters):
+            if not cluster: continue
+            
+            # 1. Weighted Centroid (Weak-Node Attraction)
+            total_w = 0.0
+            sum_x = 0.0
+            sum_y = 0.0
+            for n in cluster:
+                # weight increases as energy decreases
+                w = 1.1 - (n.energy / n.initial_energy)
+                sum_x += n.x * w
+                sum_y += n.y * w
+                total_w += w
+            w_centroid_x = sum_x / total_w
+            w_centroid_y = sum_y / total_w
+            
+            # 2. Score candidates
+            best_node = None
+            max_score = -float('inf')
+            
+            cluster_alive = [n for n in cluster if n.is_alive]
+            if not cluster_alive:
+                best_node = cluster[0]
+            else:
+                max_e = max(n.energy for n in cluster_alive) if cluster_alive else 1
+                max_d = max(n.density for n in cluster_alive) if cluster_alive else 1
+                
+                for node in cluster_alive:
+                    dist = np.sqrt((node.x - w_centroid_x)**2 + (node.y - w_centroid_y)**2)
+                    norm_dist = dist / (2 * ParameterConfig.radius) 
+                    
+                    score = (0.4 * (node.energy/max_e) + 
+                             0.3 * (node.density/max_d) - 
+                             0.3 * norm_dist)
+                    
+                    if score > max_score:
+                        max_score = score
+                        best_node = node
+            
+            if not best_node: best_node = cluster[0]
+            
+            heads.append(best_node)
+            for node in cluster:
+                node.cluster_id = cid
+                if node is best_node:
+                    node.is_ch = True
+                    node.parent_ch = None
+                else:
+                    node.is_ch = False
+                    node.parent_ch = best_node
+                    
+        return heads
+
+    def _record_final_metrics(self, nodes):
+        """Helper to avoid code duplication in run methods."""
+        alive_count = sum(1 for n in nodes if n.is_alive)
+        avg_energy  = (sum(n.energy for n in nodes if n.is_alive) / alive_count
+                       if alive_count else 0.0)
+
+        self.round_metrics.append({
+            'round': 1,
+            'n_clusters': len(self.clusters),
+            'n_ch': len(self.cluster_heads),
+            'alive_nodes': alive_count,
+            'dead_nodes': len(nodes) - alive_count,
+            'avg_residual_energy_J': round(avg_energy, 6),
+            'total_residual_energy_J': round(sum(n.energy for n in nodes), 6),
+        })
+
+        if alive_count < len(nodes) and self.first_death_round is None:
+            self.first_death_round = 1
+
+    # ------------------------------------------------------------------
+    def _select_chs_by_energy_proximity(self):
+        """
+        Multi-objective: Move CH closer to nodes with LOW energy (inverse weight).
+        Pick CH from nodes with energy ABOVE cluster average.
+        """
+        heads = []
+        for cluster in self.clusters:
+            if not cluster: continue
+            
+            # 1. Calculate weighted centroid (higher weight for low energy nodes)
+            # weight_i = 1.05 - (current_energy / initial_energy)
+            total_w = 0.0
+            sum_x = 0.0
+            sum_y = 0.0
+            cluster_energies = []
+            
+            for node in cluster:
+                # Use a small epsilon to avoid weight 0
+                w = 1.1 - (node.energy / node.initial_energy)
+                sum_x += node.x * w
+                sum_y += node.y * w
+                total_w += w
+                cluster_energies.append(node.energy)
+            
+            w_centroid_x = sum_x / total_w
+            w_centroid_y = sum_y / total_w
+            avg_energy = sum(cluster_energies) / len(cluster_energies)
+            
+            # 2. Candidate pool: Nodes with energy >= cluster average
+            # (or at least 30% left to be a reliable CH)
+            candidates = [n for n in cluster if n.is_alive and n.energy >= avg_energy]
+            if not candidates:
+                candidates = [n for n in cluster if n.is_alive] # Fallback
+                
+            # 3. Pick candidate closest to the weighted centroid
+            best_node = candidates[0]
+            min_dist = float('inf')
+            for node in candidates:
+                d = np.sqrt((node.x - w_centroid_x)**2 + (node.y - w_centroid_y)**2)
+                if d < min_dist:
+                    min_dist = d
+                    best_node = node
+            
+            heads.append(best_node)
+            best_node.is_ch = True
+        return heads
+
+    # ------------------------------------------------------------------
     def run(self, nodes, gateways=None):
         """
         Partition nodes into clusters, run energy simulation for
@@ -369,6 +557,8 @@ class Clustering:
 
         if self.algorithm == "kmeans":
             self._run_kmeans(nodes, gateways)
+        elif self.algorithm == "kde_kmeans":
+            self._run_kde_kmeans(nodes, gateways)
         elif self.algorithm == "leach":
             self._run_leach(nodes, gateways)
         else:
