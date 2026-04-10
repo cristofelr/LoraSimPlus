@@ -327,9 +327,24 @@ class Simulation:
                     )
                 node.node_total_energy += float(node.packet[bs_idx].tx_energy / 1000)
                 self.TotalPacketSize += node.packet[bs_idx].PS
-                self.TotalEnergyConsumption += float(node.packet[bs_idx].tx_energy / 1000)
                 self.TotalPacketAirtime += float(node.packet[bs_idx].rectime / 1000)            
                 
+                # DETAILED LINK LOGGING (links.csv)
+                links_csv = os.path.join(self.folder_path, "links.csv")
+                file_exists = os.path.isfile(links_csv)
+                with open(links_csv, "a", newline='') as f:
+                    import csv
+                    writer = csv.writer(f)
+                    if not file_exists:
+                        writer.writerow(['timestamp', 'node_id', 'bs_idx', 'sf', 'bw', 'freq', 'rssi', 'snr', 'toa', 'energy_j', 'status', 'role'])
+                    writer.writerow([
+                        round(env.now, 2), node.id, bs_idx, 
+                        packet.sf, packet.bw, packet.fre, 
+                        round(packet.RSSI, 2), round(packet.SNR, 2), 
+                        round(packet.rectime, 2), round(packet.tx_energy/1000, 6),
+                        status, role
+                    ])
+
             yield env.timeout(node.packet[0].rectime)
             
             # Record TX time and RX windows (simplified Class A)
@@ -367,6 +382,32 @@ class Simulation:
                         ParameterConfig.collidedPackets.append(node.packet[bs_idx].seqNr)
                         node.node_collided += 1
 
+            # 3. LORAWAN ACK LOGIC (RX Windows)
+            # Perform this AFTER checking all base stations for this transmission
+            node_packet_at_bs = node.packet[node.bs.id]
+            received_by_target = (not node_packet_at_bs.lost and not node_packet_at_bs.collided)
+            
+            if received_by_target:
+                # Wait for RX1 window (1000ms delay after TX end)
+                yield env.timeout(1000)
+                # Track RX listening time
+                rx_listen_duration = 50 # ms 
+                node.time_rx += rx_listen_duration
+                
+                # Assume 95% ACK success probability
+                if random.random() < 0.95:
+                    node.node_acks_received += 1
+                else:
+                    # Retry in RX2 (another 1000ms later)
+                    yield env.timeout(1000)
+                    node.time_rx += rx_listen_duration
+                    if random.random() < 0.95:
+                        node.node_acks_received += 1
+            
+            # Record total cycle time alignment for sleep calculation
+            node.last_action_time = env.now
+
+            # cleanup for next transmission
             for bs_idx in range(0, ParameterConfig.nrBS):                    
                 if (node in ParameterConfig.packetsAtBS[bs_idx]):
                     ParameterConfig.packetsAtBS[bs_idx].remove(node)

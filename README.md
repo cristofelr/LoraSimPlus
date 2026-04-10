@@ -65,6 +65,7 @@ Definem os objetos fundamentais da rede LoRaWAN, modelos de propagação e detec
 - `*-cluster-nodes.csv`: Lista de nós, suas posições, clusters e energia residual.
 - `*-cluster-rounds.csv`: Métricas de energia por rodada (idealizado).
 - `*-cluster-performance.csv`: **(Novo)** Métricas reais da simulação (PDR, pacotes enviados/perdidos, eficiência Bits/Joule, tempos de TX/Sleep e Duty Cycle por cluster).
+- `links.csv`: **(Novo)** Log detalhado de **cada transmissão** (SNR, RSSI, ToA, SF, energia, status, role) com ID do sensor.
 - `*-clusters.png`: Visualização do layout de clusters (fundo branco).
 
 ## Configurações Adicionais

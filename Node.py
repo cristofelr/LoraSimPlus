@@ -42,6 +42,10 @@ class myNode:
         self.time_sleep = 0.0
         self.last_action_time = 0.0 # simulator time (ms) of last state change
 
+        # ACK tracking
+        self.node_acks_received = 0
+        self.node_retransmissions = 0
+
         if ParameterConfig.allocation_type == "Global":
             myNode.Generate_Packet(self)
 

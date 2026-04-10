@@ -1,0 +1,41 @@
+Simulation start at 2026-04-10 14:22:11.662708 and end at 2026-04-10 14:22:12.416281
+--------Parameter Setting--------
+Nodes per base station: 100
+Packet generation interval: 300000 ms
+LoRa parameters allocation type: Local
+LoRa parameters allocation method: closest
+Simulation duration: 1 h
+Number of gateways: 1
+Collision check mode: Full Collision Check
+Antenna type: Directional antenna
+Number of networks: 1
+Network topology radius: 2000.0 m
+Packet payload size: 20
+Clustering: enabled
+Clustering algorithm: kmeans
+Number of clusters: 5
+LEACH rounds simulated: 1
+Node initial energy: 1.0 J
+Rounds actually simulated: 1
+First node death: none (all alive)
+Network lifetime: > 1 rounds (network alive)
+Alive nodes (final round): 100
+Avg residual energy (final round): 9.8839e-01 J
+Total residual energy (final round): 9.8839e+01 J
+
+--------Simulation Results--------
+Total number of packets sent: 1234
+Number of received packets: 1105
+Number of collided packets: 1
+Number of lost packets: 128
+send to BS[0]: 1234
+packets at BS 0: 1105
+overall received at right BS: 1105
+DER BS[]: 89.55%
+avg DER: 89.55%
+DER with 1 network: 89.55%
+Total payload size: 24680 bytes
+Received payload size: 22100 bytes
+Total transmission energy consumption: 0.839 Joule
+Network throughput: 5295.554 bps
+Effective energy consumption per byte: 3.795e-05 Joule
